@@ -1,0 +1,15 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MathieuShop.Avalonia.App"
+             xmlns:converters="using:MathieuShop.Avalonia.Converters"
+             RequestedThemeVariant="Light">
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://MathieuShop.Avalonia/Styles/Theme.axaml" />
+    </Application.Styles>
+
+    <Application.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+        <converters:AssetPathToBitmapConverter x:Key="AssetPathToBitmapConverter" />
+    </Application.Resources>
+</Application>

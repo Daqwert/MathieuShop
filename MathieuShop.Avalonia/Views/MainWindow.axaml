@@ -1,0 +1,928 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:MathieuShop.Avalonia.ViewModels"
+        x:Name="Root"
+        mc:Ignorable="d"
+        x:Class="MathieuShop.Avalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Width="1366"
+        Height="820"
+        MinWidth="980"
+        MinHeight="560"
+        CanResize="True"
+        SystemDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        RequestedThemeVariant="Light"
+        Icon="/Assets/Logo.ico"
+        Title="Матье">
+  <Grid RowDefinitions="48,*">
+    <Border Grid.Row="0"
+            Classes="panel"
+            Padding="10,6"
+            PointerPressed="TitleBar_OnPointerPressed">
+      <Grid ColumnDefinitions="Auto,*,Auto"
+            VerticalAlignment="Center">
+        <TextBlock Text="Матье"
+                   FontSize="15"
+                   FontWeight="SemiBold"
+                   VerticalAlignment="Center" />
+
+        <TextBlock Grid.Column="1"
+                   Classes="subtitle"
+                   Text="{Binding StatusMessage}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   Margin="16,0"
+                   HorizontalAlignment="Center" />
+
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    Spacing="2">
+          <Button Classes="window"
+                  Click="Minimize_Click"
+                  Content="Свернуть" />
+          <Button Classes="window"
+                  Click="Close_Click"
+                  Content="Закрыть" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1">
+      <Grid IsVisible="{Binding IsGuestMode}"
+            Margin="14"
+            ColumnDefinitions="200,*"
+            ColumnSpacing="18">
+        <Border Classes="panel">
+          <Grid RowDefinitions="Auto,*,Auto"
+                RowSpacing="18">
+            <Border Width="144"
+                    Height="104"
+                    HorizontalAlignment="Center"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+              <StackPanel HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Spacing="6">
+                <Image Source="/Assets/Logo.png"
+                       Width="54"
+                       Height="54" />
+              </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="1"
+                        Spacing="10">
+              <TextBlock Classes="title"
+                         Text="Демо-доступ" />
+              <TextBlock Text="client / demo123" />
+              <TextBlock Text="moderator / demo123" />
+              <TextBlock Text="admin / demo123" />
+              <TextBlock Text="master1 / demo123" />
+            </StackPanel>
+
+            <Border Grid.Row="2"
+                    Classes="panel alt">
+              <StackPanel Spacing="6">
+                <TextBlock FontWeight="SemiBold"
+                           Text="{Binding DatabaseModeText}" />
+                <TextBlock Classes="subtitle"
+                           Text="Окно входа и регистрации оформлено в том же строгом стиле, что и рабочая часть приложения."
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="1"
+                Classes="panel">
+          <Grid ColumnDefinitions="*,320"
+                ColumnSpacing="18">
+            <StackPanel Spacing="14">
+              <TextBlock Classes="title"
+                         Text="Онлайн-запись в лавку «Матье»" />
+              <TextBlock Classes="subtitle"
+                         Text="Интерфейс перестроен под шаблон: простая шапка, отдельная колонка навигации, прямоугольные карточки услуг, фильтры и постраничная навигация."
+                         TextWrapping="Wrap" />
+
+              <Border Classes="panel alt">
+                <StackPanel Spacing="8">
+                  <TextBlock FontWeight="SemiBold"
+                             Text="Коллекции" />
+                  <ItemsControl ItemsSource="{Binding ThemeCards}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:ThemeCardItem">
+                        <TextBlock Text="{Binding Name}"
+                                   Margin="0,0,0,4" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </Border>
+
+              <Border Classes="panel alt">
+                <StackPanel Spacing="8">
+                  <TextBlock FontWeight="SemiBold"
+                             Text="Что уже реализовано" />
+                  <TextBlock TextWrapping="Wrap"
+                             Text="Роли клиентов, администратора, модератора и мастера; каталог, записи, баланс, отзывы, управление услугами и сотрудниками, а также работа с PostgreSQL." />
+                </StackPanel>
+              </Border>
+
+              <Border Classes="panel"
+                      Padding="8">
+                <Image Source="/Assets/Images/Косплей/KL6.jpg"
+                       Height="250"
+                       Stretch="Uniform" />
+              </Border>
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Classes="panel alt">
+              <ScrollViewer>
+                <StackPanel Spacing="12">
+                  <TextBlock Classes="title"
+                             Text="{Binding AuthPanelTitle}" />
+                  <TextBlock Classes="subtitle"
+                             Text="Введите логин и пароль или создайте новый аккаунт."
+                             TextWrapping="Wrap" />
+
+                  <StackPanel IsVisible="{Binding ShowRegistration}"
+                              Spacing="10">
+                    <TextBox Watermark="ФИО"
+                             Text="{Binding RegisterFullName}" />
+                    <TextBox Watermark="Логин"
+                             Text="{Binding RegisterLogin}" />
+                    <TextBox Watermark="Email"
+                             Text="{Binding RegisterEmail}" />
+                    <TextBox Watermark="Телефон"
+                             Text="{Binding RegisterPhone}" />
+                    <TextBox Watermark="Пароль"
+                             Text="{Binding RegisterPassword}" />
+                    <Button Classes="primary"
+                            Command="{Binding RegisterUserCommand}"
+                            Content="Создать аккаунт" />
+                  </StackPanel>
+
+                  <StackPanel IsVisible="{Binding ShowLoginForm}"
+                              Spacing="10">
+                    <TextBox Watermark="Логин"
+                             Text="{Binding Login}" />
+                    <TextBox Watermark="Пароль"
+                             Text="{Binding Password}" />
+                    <Button Classes="primary"
+                            Command="{Binding LoginUserCommand}"
+                            Content="Войти" />
+                  </StackPanel>
+
+                  <Button Classes="secondary"
+                          Command="{Binding ToggleRegistrationCommand}"
+                          Content="{Binding AuthToggleText}" />
+                </StackPanel>
+              </ScrollViewer>
+            </Border>
+          </Grid>
+        </Border>
+      </Grid>
+
+      <Grid IsVisible="{Binding IsAuthenticated}"
+            Margin="14"
+            ColumnDefinitions="180,*"
+            ColumnSpacing="18">
+        <Border Classes="panel">
+          <Grid RowDefinitions="Auto,Auto,*,Auto"
+                RowSpacing="16">
+            <Border Width="144"
+                    Height="96"
+                    HorizontalAlignment="Center"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+              <StackPanel HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Spacing="6">
+                <Image Source="/Assets/Logo.png"
+                       Width="50"
+                       Height="50" />
+              </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="1"
+                        Spacing="4">
+              <TextBlock FontWeight="SemiBold"
+                         Text="{Binding CurrentUserName}" />
+              <TextBlock Classes="subtitle"
+                         Text="{Binding CurrentRoleText}" />
+              <TextBlock Text="{Binding CurrentBalanceText}" />
+              <TextBlock Classes="subtitle"
+                         Text="{Binding DatabaseModeText}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2"
+                        VerticalAlignment="Bottom">
+              <Button Classes="nav"
+                      Command="{Binding OpenCatalogCommand}"
+                      Content="Услуги" />
+              <Button Classes="nav"
+                      IsVisible="{Binding IsClient}"
+                      Command="{Binding OpenBookingsCommand}"
+                      Content="Мои записи" />
+              <Button Classes="nav"
+                      IsVisible="{Binding IsClient}"
+                      Command="{Binding OpenBalanceCommand}"
+                      Content="Баланс" />
+              <Button Classes="nav"
+                      IsVisible="{Binding IsClient}"
+                      Command="{Binding OpenReviewsCommand}"
+                      Content="Отзывы" />
+              <Button Classes="nav"
+                      IsVisible="{Binding CanSeeAdminSection}"
+                      Command="{Binding OpenAdminCommand}"
+                      Content="Пользователи" />
+              <Button Classes="nav"
+                      IsVisible="{Binding CanSeeModeratorSection}"
+                      Command="{Binding OpenModeratorCommand}"
+                      Content="Модерация" />
+              <Button Classes="nav"
+                      IsVisible="{Binding CanSeeMasterSection}"
+                      Command="{Binding OpenMasterCommand}"
+                      Content="Работа мастера" />
+            </StackPanel>
+
+            <Button Grid.Row="3"
+                    Classes="nav"
+                    Command="{Binding LogoutCommand}"
+                    Content="Выход" />
+          </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Column="1">
+          <StackPanel Spacing="18">
+            <Border Classes="panel"
+                    IsVisible="{Binding IsHomeSection}">
+              <Grid ColumnDefinitions="260,*"
+                    ColumnSpacing="18">
+                <Border Classes="panel alt">
+                  <StackPanel Spacing="10">
+                    <TextBlock Classes="title"
+                               Text="Обзор" />
+                    <TextBlock Classes="subtitle"
+                               Text="Раздел оставлен как обзорный экран. Основной рабочий сценарий клиента теперь стартует сразу с раздела услуг."
+                               TextWrapping="Wrap" />
+                    <ItemsControl ItemsSource="{Binding ThemeCards}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ThemeCardItem">
+                          <Border Classes="panel"
+                                  Margin="0,0,0,8"
+                                  Padding="8">
+                            <Grid ColumnDefinitions="72,*"
+                                  ColumnSpacing="10">
+                              <Border Width="72"
+                                      Height="72"
+                                      ClipToBounds="True"
+                                      BorderBrush="{StaticResource BorderBrush}"
+                                      BorderThickness="1">
+                                <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                       Width="72"
+                                       Height="72"
+                                       Stretch="UniformToFill" />
+                              </Border>
+                              <StackPanel Grid.Column="1"
+                                          VerticalAlignment="Center"
+                                          Spacing="4">
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{Binding Name}" />
+                                <TextBlock Classes="subtitle"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
+                              </StackPanel>
+                            </Grid>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Classes="panel alt">
+                  <StackPanel Spacing="10">
+                    <TextBlock Classes="title"
+                               Text="{Binding HomeProductsTitle}" />
+                    <TextBlock Classes="subtitle"
+                               Text="{Binding HomeProductsSubtitle}" />
+                    <ItemsControl ItemsSource="{Binding HomeThemeProducts}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ServiceCatalogItem">
+                          <Border Classes="panel"
+                                  Margin="0,0,0,10"
+                                  Padding="8">
+                            <Grid ColumnDefinitions="110,*"
+                                  ColumnSpacing="12">
+                              <Border Width="110"
+                                      Height="84"
+                                      ClipToBounds="True"
+                                      BorderBrush="{StaticResource BorderBrush}"
+                                      BorderThickness="1">
+                                <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                       Width="110"
+                                       Height="84"
+                                       Stretch="UniformToFill" />
+                              </Border>
+                              <StackPanel Grid.Column="1"
+                                          Spacing="4"
+                                          VerticalAlignment="Center">
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Price, StringFormat='{}{0:N0} ₽'}" />
+                                <TextBlock Classes="subtitle"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
+                              </StackPanel>
+                            </Grid>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </Border>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsCatalogSection}">
+              <Grid ColumnDefinitions="*,250"
+                    ColumnSpacing="18">
+                <Grid RowDefinitions="Auto,*,Auto"
+                      RowSpacing="10">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="4">
+                    <Button Classes="tab"
+                            Command="{Binding ClearCatalogThemeCommand}"
+                            Content="Все" />
+                    <ItemsControl ItemsSource="{Binding ThemeCards}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ThemeCardItem">
+                          <Button Classes="tab"
+                                  Content="{Binding Name}"
+                                  Command="{Binding DataContext.SelectCatalogThemeCommand, ElementName=Root}"
+                                  CommandParameter="{Binding}" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+
+                  <Border Grid.Row="1"
+                          Classes="panel"
+                          Padding="8">
+                    <ListBox ItemsSource="{Binding CatalogItems}"
+                             SelectedItem="{Binding SelectedCatalogItem}"
+                             BorderThickness="0"
+                             Background="Transparent">
+                      <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ServiceCatalogItem">
+                          <Border Classes="panel alt"
+                                  Margin="0,0,0,12"
+                                  Padding="12">
+                            <Grid ColumnDefinitions="130,*"
+                                  ColumnSpacing="16">
+                              <Border Width="130"
+                                      Height="98"
+                                      ClipToBounds="True"
+                                      BorderBrush="{StaticResource BorderBrush}"
+                                      BorderThickness="1">
+                                <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                       Width="130"
+                                       Height="98"
+                                       Stretch="UniformToFill" />
+                              </Border>
+
+                              <Grid Grid.Column="1"
+                                    ColumnDefinitions="*,Auto"
+                                    ColumnSpacing="12">
+                                <StackPanel Spacing="4">
+                                  <TextBlock FontWeight="SemiBold"
+                                             Text="{Binding Name}" />
+                                  <TextBlock Text="{Binding ThemeName}" />
+                                  <TextBlock Text="{Binding Price, StringFormat='{}{0:N0} ₽'}" />
+                                  <TextBlock Classes="subtitle"
+                                             Text="{Binding LastModifiedText, StringFormat='Обновлено: {0}'}" />
+                                  <TextBlock Classes="subtitle"
+                                             Text="{Binding Description}"
+                                             TextWrapping="Wrap"
+                                             MaxHeight="52" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1"
+                                            Spacing="4"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                  <TextBlock Text="{Binding DurationMinutes, StringFormat='{}{0} мин.'}" />
+                                  <ItemsControl ItemsSource="{Binding Masters}">
+                                    <ItemsControl.ItemTemplate>
+                                      <DataTemplate x:DataType="vm:EmployeeChoice">
+                                        <TextBlock Classes="subtitle"
+                                                   Text="{Binding DisplayName}" />
+                                      </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                  </ItemsControl>
+                                </StackPanel>
+                              </Grid>
+                            </Grid>
+                          </Border>
+                        </DataTemplate>
+                      </ListBox.ItemTemplate>
+                    </ListBox>
+                  </Border>
+
+                  <TextBlock Grid.Row="2"
+                             HorizontalAlignment="Right"
+                             Text="{Binding CatalogPageText}" />
+                </Grid>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="10">
+                  <TextBox Watermark="Поиск"
+                           Text="{Binding CatalogSearchText}" />
+                  <ComboBox ItemsSource="{Binding ThemeCards}"
+                            SelectedItem="{Binding SelectedCatalogTheme}" />
+                  <TextBlock Classes="subtitle"
+                             Text="{Binding CatalogThemeText, StringFormat='Коллекция: {0}'}" />
+                  <Button Classes="secondary"
+                          Command="{Binding ToggleCatalogSortCommand}"
+                          Content="{Binding CatalogSortText}" />
+
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="2"
+                              HorizontalAlignment="Left">
+                    <Button Classes="secondary"
+                            Width="52"
+                            Command="{Binding PreviousCatalogPageCommand}"
+                            Content="←" />
+                    <Button Classes="secondary"
+                            Width="52"
+                            Command="{Binding NextCatalogPageCommand}"
+                            Content="→" />
+                  </StackPanel>
+
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="8">
+                      <TextBlock FontWeight="SemiBold"
+                                 Text="{Binding SelectedCatalogItem.Name}" />
+                      <Border Height="120"
+                              ClipToBounds="True"
+                              BorderBrush="{StaticResource BorderBrush}"
+                              BorderThickness="1">
+                        <Image Source="{Binding SelectedCatalogItem.ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                               Height="120"
+                               Stretch="UniformToFill" />
+                      </Border>
+                      <TextBlock Classes="subtitle"
+                                 Text="{Binding SelectedCatalogItem.Description}"
+                                 TextWrapping="Wrap" />
+                      <TextBlock Text="{Binding SelectedCatalogItem.Price, StringFormat='Цена: {0:N0} ₽'}" />
+                      <TextBlock Text="{Binding SelectedCatalogItem.DurationMinutes, StringFormat='Длительность: {0} мин.'}" />
+                      <ComboBox ItemsSource="{Binding SelectedCatalogItem.Masters}"
+                                SelectedItem="{Binding SelectedCatalogMaster}" />
+                      <ComboBox ItemsSource="{Binding BookingSlots}"
+                                SelectedItem="{Binding SelectedBookingSlot}" />
+                      <TextBox Height="72"
+                               AcceptsReturn="True"
+                               Text="{Binding BookingNotes}"
+                               Watermark="Комментарий" />
+                      <Button Classes="primary"
+                              Command="{Binding BookSelectedServiceCommand}"
+                              Content="Записаться" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsBookingsSection}">
+              <Grid ColumnDefinitions="1.05*,0.95*"
+                    ColumnSpacing="18">
+                <StackPanel Spacing="12">
+                  <TextBlock Classes="title"
+                             Text="Мои записи" />
+                  <ListBox ItemsSource="{Binding ClientBookings}"
+                           SelectedItem="{Binding SelectedBookingForReview}"
+                           BorderThickness="0"
+                           Background="Transparent">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:BookingItem">
+                        <Border Classes="panel alt"
+                                Margin="0,0,0,12">
+                          <Grid ColumnDefinitions="*,160"
+                                ColumnSpacing="16">
+                            <StackPanel Spacing="4"
+                                        VerticalAlignment="Center">
+                              <TextBlock FontWeight="SemiBold"
+                                         Text="{Binding ServiceName}" />
+                              <TextBlock Text="{Binding MasterName}" />
+                              <TextBlock Text="{Binding ScheduledAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" />
+                              <TextBlock Text="{Binding QueueNumber, StringFormat='Номер в очереди: {0}'}" />
+                              <TextBlock Text="{Binding StatusText}" />
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Width="160"
+                                    Height="120"
+                                    ClipToBounds="True"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    HorizontalAlignment="Right">
+                              <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                     Width="160"
+                                     Height="120"
+                                     Stretch="UniformToFill" />
+                            </Border>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Classes="panel alt">
+                  <StackPanel Spacing="12">
+                    <TextBlock Classes="title"
+                               Text="Отзыв по записи" />
+                    <TextBlock Classes="subtitle"
+                               Text="Выберите завершённую запись слева и оставьте отзыв о мастере или услуге."
+                               TextWrapping="Wrap" />
+                    <ComboBox ItemsSource="{Binding AvailableRatings}"
+                              SelectedItem="{Binding SelectedRating}" />
+                    <TextBox Height="120"
+                             AcceptsReturn="True"
+                             Text="{Binding ReviewComment}"
+                             Watermark="Комментарий" />
+                    <Button Classes="primary"
+                            Command="{Binding SubmitReviewCommand}"
+                            Content="Сохранить отзыв" />
+                  </StackPanel>
+                </Border>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsBalanceSection}">
+              <Grid ColumnDefinitions="320,*"
+                    ColumnSpacing="18">
+                <StackPanel Spacing="12">
+                  <TextBlock Classes="title"
+                             Text="Баланс клиента" />
+                  <TextBlock FontSize="26"
+                             FontWeight="Bold"
+                             Text="{Binding CurrentBalanceText}" />
+                  <TextBox Watermark="Сумма пополнения"
+                           Text="{Binding TopUpAmount}" />
+                  <TextBox Watermark="Номер карты"
+                           Text="{Binding TopUpCardNumber}" />
+                  <Button Classes="primary"
+                          Command="{Binding TopUpBalanceCommand}"
+                          Content="Пополнить баланс" />
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Classes="panel alt"
+                        Padding="8">
+                  <Image Source="/Assets/Images/Кастом/Pr12.jpg"
+                         Height="300"
+                         Stretch="Uniform" />
+                </Border>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsReviewsSection}">
+              <StackPanel Spacing="12">
+                <TextBlock Classes="title"
+                           Text="Лента отзывов" />
+                <ItemsControl ItemsSource="{Binding ReviewFeed}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ReviewItem">
+                      <Border Classes="panel alt"
+                              Margin="0,0,0,10">
+                        <StackPanel Spacing="4">
+                          <TextBlock FontWeight="SemiBold"
+                                     Text="{Binding ServiceName}" />
+                          <TextBlock Text="{Binding MasterName}" />
+                          <TextBlock Classes="subtitle"
+                                     Text="{Binding CustomerName, StringFormat='Клиент: {0}'}" />
+                          <TextBlock Text="{Binding Rating, StringFormat='Оценка: {0}/5'}" />
+                          <TextBlock Text="{Binding Comment}"
+                                     TextWrapping="Wrap" />
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsAdminSection}">
+              <Grid ColumnDefinitions="1.05*,0.95*"
+                    ColumnSpacing="18">
+                <StackPanel Spacing="12">
+                  <TextBlock Classes="title"
+                             Text="Управление пользователями" />
+                  <ListBox ItemsSource="{Binding ManagedUsers}"
+                           SelectedItem="{Binding SelectedManagedUser}">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:UserEditorItem">
+                        <Border Classes="panel alt"
+                                Margin="0,0,0,10">
+                          <StackPanel Spacing="4">
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="{Binding FullName}" />
+                            <TextBlock Text="{Binding Login}" />
+                            <TextBlock Text="{Binding Role}" />
+                            <TextBlock Text="{Binding Balance, StringFormat='{}{0:N0} ₽'}" />
+                          </StackPanel>
+                        </Border>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="14">
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Редактирование пользователя" />
+                      <TextBox Text="{Binding EditedUserBalance}"
+                               Watermark="Баланс" />
+                      <CheckBox IsChecked="{Binding EditedUserBlocked}"
+                                Content="Заблокировать пользователя" />
+                      <Button Classes="primary"
+                              Command="{Binding SaveSelectedUserCommand}"
+                              Content="Сохранить изменения" />
+                    </StackPanel>
+                  </Border>
+
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Добавление сотрудника" />
+                      <TextBox Text="{Binding NewEmployeeFullName}"
+                               Watermark="ФИО" />
+                      <TextBox Text="{Binding NewEmployeeLogin}"
+                               Watermark="Логин" />
+                      <TextBox Text="{Binding NewEmployeeEmail}"
+                               Watermark="Email" />
+                      <TextBox Text="{Binding NewEmployeePhone}"
+                               Watermark="Телефон" />
+                      <ComboBox ItemsSource="{Binding AvailableEmployeeRoles}"
+                                SelectedItem="{Binding NewEmployeeRole}" />
+                      <TextBox Text="{Binding NewEmployeeSpecialty}"
+                               Watermark="Специализация" />
+                      <TextBox Text="{Binding NewEmployeeAbout}"
+                               Watermark="Описание" />
+                      <TextBox Text="{Binding NewEmployeePassword}"
+                               Watermark="Пароль" />
+                      <Button Classes="primary"
+                              Command="{Binding CreateEmployeeCommand}"
+                              Content="Добавить сотрудника" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsModeratorSection}">
+              <Grid ColumnDefinitions="1.05*,0.95*"
+                    ColumnSpacing="18">
+                <StackPanel Spacing="12">
+                  <Grid ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                    <TextBlock Classes="title"
+                               Text="Модерация услуг" />
+                    <Button Grid.Column="1"
+                            Classes="secondary"
+                            Command="{Binding CreateNewServiceDraftCommand}"
+                            Content="Новая услуга" />
+                  </Grid>
+
+                  <ListBox ItemsSource="{Binding ManagedServices}"
+                           SelectedItem="{Binding SelectedManagedService}">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:ServiceEditorItem">
+                        <Border Classes="panel alt"
+                                Margin="0,0,0,10">
+                          <Grid ColumnDefinitions="*,150"
+                                ColumnSpacing="16">
+                            <StackPanel Spacing="4"
+                                        VerticalAlignment="Center">
+                              <TextBlock FontWeight="SemiBold"
+                                         Text="{Binding Name}" />
+                              <TextBlock Text="{Binding ThemeName}" />
+                              <TextBlock Text="{Binding Price, StringFormat='{}{0:N0} ₽'}" />
+                              <TextBlock Text="{Binding LastModifiedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" />
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Width="150"
+                                    Height="108"
+                                    ClipToBounds="True"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    HorizontalAlignment="Right">
+                              <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                     Width="150"
+                                     Height="108"
+                                     Stretch="UniformToFill" />
+                            </Border>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="14">
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Редактор услуги" />
+                      <TextBox Text="{Binding ManagedServiceName}"
+                               Watermark="Название" />
+                      <TextBox Text="{Binding ManagedServiceDescription}"
+                               Height="90"
+                               AcceptsReturn="True"
+                               Watermark="Описание" />
+                      <TextBox Text="{Binding ManagedServicePrice}"
+                               Watermark="Цена" />
+                      <TextBox Text="{Binding ManagedServiceDuration}"
+                               Watermark="Длительность, мин." />
+                      <ComboBox ItemsSource="{Binding ThemeOptions}"
+                                SelectedItem="{Binding SelectedThemeOption}" />
+                      <TextBox Text="{Binding ManagedServiceImagePath}"
+                               Watermark="Путь к изображению" />
+                      <CheckBox IsChecked="{Binding ManagedServiceHoliday}"
+                                Content="Праздничная услуга" />
+                      <Button Classes="primary"
+                              Command="{Binding SaveManagedServiceCommand}"
+                              Content="Сохранить услугу" />
+                    </StackPanel>
+                  </Border>
+
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Привязка мастеров" />
+                      <ComboBox ItemsSource="{Binding AvailableMasters}"
+                                SelectedItem="{Binding SelectedAssignmentMaster}" />
+                      <Button Classes="secondary"
+                              Command="{Binding BindMasterToServiceCommand}"
+                              Content="Привязать к услуге" />
+                      <ComboBox ItemsSource="{Binding BoundMasters}"
+                                SelectedItem="{Binding SelectedBoundMaster}" />
+                      <Button Classes="secondary"
+                              Command="{Binding UnbindMasterFromServiceCommand}"
+                              Content="Отвязать мастера" />
+                    </StackPanel>
+                  </Border>
+
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Квалификация мастеров" />
+                      <ComboBox ItemsSource="{Binding EmployeeDirectory}"
+                                SelectedItem="{Binding SelectedEmployeeForQualification}" />
+                      <Button Classes="primary"
+                              Command="{Binding RaiseEmployeeQualificationCommand}"
+                              Content="Повысить квалификацию" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </Grid>
+            </Border>
+
+            <Border Classes="panel"
+                    IsVisible="{Binding IsMasterSection}">
+              <Grid ColumnDefinitions="1.05*,0.95*"
+                    ColumnSpacing="18">
+                <StackPanel Spacing="12">
+                  <TextBlock Classes="title"
+                             Text="Записи на мастера" />
+                  <ListBox ItemsSource="{Binding MasterBookings}">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:BookingItem">
+                        <Border Classes="panel alt"
+                                Margin="0,0,0,10">
+                          <Grid ColumnDefinitions="*,140"
+                                ColumnSpacing="16">
+                            <StackPanel Spacing="4"
+                                        VerticalAlignment="Center">
+                              <TextBlock FontWeight="SemiBold"
+                                         Text="{Binding ServiceName}" />
+                              <TextBlock Text="{Binding MasterName, StringFormat='Телефон клиента: {0}'}" />
+                              <TextBlock Text="{Binding ScheduledAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" />
+                              <TextBlock Text="{Binding QueueNumber, StringFormat='Очередь: {0}'}" />
+                              <TextBlock Text="{Binding StatusText}" />
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Width="140"
+                                    Height="104"
+                                    ClipToBounds="True"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    HorizontalAlignment="Right">
+                              <Image Source="{Binding ImagePath, Converter={StaticResource AssetPathToBitmapConverter}}"
+                                     Width="140"
+                                     Height="104"
+                                     Stretch="UniformToFill" />
+                            </Border>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="14">
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="Заявка на повышение квалификации" />
+                      <TextBox Text="{Binding QualificationRequestDesiredLevel}"
+                               Watermark="Желаемый уровень" />
+                      <TextBox Text="{Binding QualificationRequestComment}"
+                               Height="90"
+                               AcceptsReturn="True"
+                               Watermark="Комментарий" />
+                      <Button Classes="primary"
+                              Command="{Binding SubmitQualificationRequestCommand}"
+                              Content="Отправить заявку" />
+                    </StackPanel>
+                  </Border>
+
+                  <Border Classes="panel alt">
+                    <StackPanel Spacing="10">
+                      <TextBlock Classes="title"
+                                 Text="История заявок" />
+                      <ItemsControl ItemsSource="{Binding QualificationRequests}">
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate x:DataType="vm:QualificationRequestItem">
+                            <Border Classes="panel"
+                                    Margin="0,0,0,10">
+                              <StackPanel Spacing="4">
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{Binding EmployeeName}" />
+                                <TextBlock Text="{Binding DesiredLevel, StringFormat='Уровень: {0}'}" />
+                                <TextBlock Text="{Binding StatusText}" />
+                                <TextBlock Text="{Binding Comment}"
+                                           TextWrapping="Wrap" />
+                              </StackPanel>
+                            </Border>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </Grid>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+
+      <Border IsVisible="{Binding ShowExitDialog}"
+              Background="#66000000">
+        <Border Classes="panel"
+                Width="360"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="title"
+                       Text="Завершить работу?" />
+            <TextBlock Classes="subtitle"
+                       Text="Подтвердите закрытие окна. Диалог оставлен отдельным, как и требовалось по заданию."
+                       TextWrapping="Wrap" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+              <Button Classes="secondary"
+                      Click="CancelClose_Click"
+                      Content="Остаться" />
+              <Button Classes="primary"
+                      Click="ConfirmClose_Click"
+                      Content="Закрыть" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Border>
+    </Grid>
+  </Grid>
+</Window>
